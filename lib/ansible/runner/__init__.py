@@ -32,6 +32,7 @@ import shlex
 import pipes
 import jinja2
 import subprocess
+import types
 
 import ansible.constants as C
 import ansible.inventory
@@ -278,7 +279,9 @@ class Runner(object):
             raise errors.AnsibleError("environment must be a dictionary, received %s" % enviro)
         result = ""
         for (k,v) in enviro.iteritems():
-            result = "%s=%s %s" % (k, pipes.quote(str(v)), result)
+            if not isinstance(v, types.StringTypes):
+                v = str(v)
+            result = "%s=%s %s" % (k, pipes.quote(v), result)
         return result
 
     # *****************************************************
